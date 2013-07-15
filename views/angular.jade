@@ -1,0 +1,44 @@
+doctype 5
+html(ng-app)
+	head
+		script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js")
+
+
+	body
+		script.
+			var xmlHttp;
+			var num = 0;
+			function startHTTP(str, callback){
+				xmlHttp = new XMLHttpRequest();
+				xmlHttp.open("GET", str, true);
+				xmlHttp.responseType="text";
+				xmlHttp.send(null);
+				xmlHttp.onreadystatechange = callback;
+			}
+			function updateNum(){
+				startHTTP("/sensors/num",function(){
+					console.log("Calling. Current response: " + xmlHttp.response);
+					if(xmlHttp.readyState == xmlHttp.DONE){
+						console.log(xmlHttp.response);
+						num = parseInt(xmlHttp.response,10);
+					}
+				});
+			}
+			function sensorsCtrl($scope){
+				$scope.numSensors = function(){
+					updateNum();
+					return num;
+				}
+			}
+		br/
+		label Name:
+		input(type='text')(ng-model="yourName")(placeholder="Enter name")
+		br/
+		h2 Hello, {{yourName}}!
+		br/
+		br/
+		
+		div(ng-controller="sensorsCtrl")
+			{{numSensors()}} sensors active
+			
+		

@@ -1,0 +1,15 @@
+extends layout
+
+block content
+	h1= title
+	p Welcome to #{title}
+	form(id="addForm")(method="post")(action="/sensors/add/")(enctype="multipart/form-data")
+		input(name="city")(id="TextBox")(type="text")(maxlength="16")(required)(placeholder="City Name")
+		button(id="Submit")(type="submit") Submit
+	br/
+	br/
+	form(id="resetBtn")(method="post")(action="/sensors/clear/")
+		button(id="dbReset") Empty Database
+	br/
+	h2 All Database Entries:
+	iframe(src="/sensors/")(seamless)(width=500)(height=300) Iframe here
