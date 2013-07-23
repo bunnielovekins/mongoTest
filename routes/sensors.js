@@ -62,24 +62,6 @@ exports.showOne = function(req, res){
 	});
 }
 
-exports.add = function(req,res){
-	sens.find({},function(err,cur){
-		cur.count(function(err,num){
-			sens.insert({'city':req.body.city, '_id':num, 'val':42}, {safe:true}, function(err,rec){
-			if(err)
-				console.log(err.toString());
-			});
-			res.redirect('/sensors/' + num);
-		});
-	});
-}
-
-exports.clear = function(req,res){
-	console.log("Clearing");
-	sens.remove({});
-	res.redirect('back');
-}
-
 exports.showVal = function(req,res){
 	var reqNum = parseInt(req.params.num,10);
 	if(isNaN(reqNum)){
@@ -103,7 +85,31 @@ exports.numSensors = function(req,res){
 	});
 }
 
+exports.add = function(req,res){
+	sens.find({},function(err,cur){
+		cur.count(function(err,num){
+			sens.insert({'city':req.body.city, '_id':num, 'val':42}, {safe:true}, function(err,rec){
+			if(err)
+				console.log(err.toString());
+			});
+			res.send(num);
+		});
+	});
+}
 
+exports.clear = function(req,res){
+	console.log("Clearing");
+	sens.remove({});
+	res.redirect('back');
+}
+
+exports.update = function(req,res){
+	console.log(req.body);
+	for(x in req)
+		console.log(x);
+	var ident = parseInt(req.params.id);
+	sens.update({"_id":ident},{$inc:{'val':1}});
+}
 
 
 

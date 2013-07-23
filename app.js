@@ -37,8 +37,9 @@ app.get('/sensors', sensors.listAll);
 app.get('/sensors/:id', sensors.showOne);
 app.get('/:num', sensors.showVal);
 
-app.post('/sensors/add', sensors.add);
-app.post('/sensors/clear', sensors.clear);
+app.post('/sensors/:id', sensors.update); // PUT = create, POST = create/update
+app.put('/sensors/add', sensors.add);
+app.put('/sensors/clear', sensors.clear);
 
 
 http.createServer(app).listen(app.get('port'), function(){
