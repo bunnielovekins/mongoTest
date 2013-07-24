@@ -88,14 +88,21 @@ exports.numSensors = function(req,res){
 exports.add = function(req,res){
 	sens.find({},function(err,cur){
 		cur.count(function(err,num){
-			sens.insert({'city':req.body.city, '_id':num, 'val':42}, {safe:true}, function(err,rec){
-			if(err)
+		    if(err){
+			console.log(err.toString());
+			return;
+		    }
+		    var cityName;
+		    if(cityName = req.param("city")){
+			sens.insert({'city':cityName, '_id':num, 'val':42}, {safe:true},function(err,doc){
+			    if(err)
 				console.log(err.toString());
 			});
-			res.send(num);
-		});
-	});
-}
+			res.send("id:" + num);
+		    }//End if cityname
+		});//Emd count callback
+	});//end find callback
+}// end add
 
 exports.clear = function(req,res){
 	console.log("Clearing");
@@ -104,11 +111,10 @@ exports.clear = function(req,res){
 }
 
 exports.update = function(req,res){
-	console.log(req.body);
-	for(x in req)
-		console.log(x);
-	var ident = parseInt(req.params.id);
-	sens.update({"_id":ident},{$inc:{'val':1}});
+    console.log(req.body);
+    var ident = parseInt(req.params.id);
+    var val = parseInt(req.param("val"));
+    sens.update({"_id":ident},{$set:{'val':val}});
 }
 
 

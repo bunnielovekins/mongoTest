@@ -1,8 +1,7 @@
 extends layout
 
 block content
-	h1= title
-	p Welcome to #{title}
+	p Welcome to Peter's Sensor Database
 	form(id="addForm")(method="post")(action="/sensors/add/")(enctype="multipart/form-data")
 		input(name="city")(id="TextBox")(type="text")(maxlength="16")(required)(placeholder="City Name")
 		button(id="Submit")(type="submit") Submit
