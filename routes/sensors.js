@@ -1,5 +1,3 @@
-
-
 var mongo = require('mongodb');
 var Server = mongo.Server,
 	Db = mongo.Db,
@@ -111,13 +109,26 @@ exports.clear = function(req,res){
 }
 
 exports.update = function(req,res){
-    console.log(req.body);
+    console.log("Got a proper update!");
     var ident = parseInt(req.params.id);
     var val = parseInt(req.param("val"));
     sens.update({"_id":ident},{$set:{'val':val}});
+    res.send('updated');
 }
 
-
+exports.formUpdate = function(req,res){
+    console.log("Got a form update...");
+    var ident = parseInt(req.param("id"));
+    var value = parseInt(req.param("val"));
+    console.log("Updating id=" + ident + " to val=" + value);
+    sens.update(
+	{"_id":ident},
+	{
+	    $set: { "val" : value }
+	}
+    );
+    res.redirect('back');
+}
 
 
 

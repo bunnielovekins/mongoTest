@@ -40,7 +40,9 @@ app.get('/:num', sensors.showVal);
 // PUT = create, POST = create/update
 app.post('/sensors/add', sensors.add);
 app.post('/sensors/clear', sensors.clear);
+app.post('/sensors/upd', sensors.formUpdate);
 app.post('/sensors/:id', sensors.update);
+
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

@@ -6,6 +6,12 @@ block content
 		input(name="city")(id="TextBox")(type="text")(maxlength="16")(required)(placeholder="City Name")
 		button(id="Submit")(type="submit") Submit
 	br/
+	form(id="updateForm")(method="post")(action="/sensors/upd")
+		p Id:
+		input(name="id")(type="number")(required)(value=0)
+		p Value:
+		input(name="val")(type="number")(required)(value=5)
+		button(type="Submit") Submit
 	br/
 	form(id="resetBtn")(method="post")(action="/sensors/clear/")
 		button(id="dbReset") Empty Database
