@@ -1,7 +1,7 @@
 extends layout
 
 block content
-	p Welcome to Peter's Sensor Database
+	h1 Welcome to Peter's Sensor Database
 	form(id="addForm")(method="post")(action="/sensors/add/")(enctype="multipart/form-data")
 		input(name="city")(id="TextBox")(type="text")(maxlength="16")(required)(placeholder="City Name")
 		button(id="Submit")(type="submit") Submit
@@ -11,4 +11,4 @@ block content
 		button(id="dbReset") Empty Database
 	br/
 	h2 All Database Entries:
-	iframe(src="/sensors/")(seamless)(width=500)(height=300) Iframe here
+	iframe(src="/sensors/")(seamless)(width=500)(height=1000) Iframe here
