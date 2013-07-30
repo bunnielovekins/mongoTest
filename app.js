@@ -10,6 +10,9 @@ var express = require('express')
   , http = require('http')
   , path = require('path');
 
+var dgram = require('dgram');
+var server = dgram.createSocket('udp4');
+
 var app = express();
 
 // all environments
@@ -47,3 +50,19 @@ app.post('/sensors/:id', sensors.update);
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
+
+server.on("message",function(msg,rinfo){
+    console.log("Got UDP Message: " + msg);
+    if(msg.startsWith("get")){
+	
+    }
+    else if(msg.startsWith("set")){
+	
+    }
+});
+
+server.on("listening",function(){
+    console.log("UDP Server Listening");
+});
+
+server.bind(4001);

@@ -109,9 +109,9 @@ exports.clear = function(req,res){
 }
 
 exports.update = function(req,res){
-    console.log("Got a proper update!");
     var ident = parseInt(req.params.id);
     var val = parseInt(req.param("val"));
+    console.log("Got update. id:" + ident + ", value:" + val);
     sens.update({"_id":ident},{$set:{'val':val}});
     res.send('updated');
 }
