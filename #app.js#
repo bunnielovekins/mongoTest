@@ -59,8 +59,7 @@ server.on("message",function(msg,rinfo){
 			{
 			    send: function(str){
 				var buf = new Buffer(str,'ascii');
-				server.send(
-				    buf,0,buf.length,4001,rinfo.address,function(err,bytes){
+				server.send(buf,0,buf.length,4001,rinfo.address,function(err,bytes){
 				    if(err)
 					console.log(err);
 				    else console.log("sent UDP Response: " + bytes + " to: " + rinfo.address);

@@ -63,18 +63,24 @@ exports.showOne = function(req, res){
 exports.showVal = function(req,res){
 	var reqNum = parseInt(req.params.num,10);
 	if(isNaN(reqNum)){
+	    if(res)
 		res.send("");
-		return;
+	    return;
 	}
 	sens.findOne({'_id':reqNum},{'val':true, '_id':false},function(err,doc){
-		if(err || !doc){
-			return;
-		}
-		res.send(doc.val + '');
+	    if(err || !doc){
+		return;
+	    }
+	    if(res)
+		res.send(doc.val);
+	    return doc.val;
 	});
 }
 
 exports.numSensors = function(req,res){
+    if(req.body){
+	console.log("Message body: " + req.body);
+    }
 	sens.find({},function(err,cur){
 		cur.count(function(err,num){
 			console.log(num);
