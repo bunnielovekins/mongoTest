@@ -5,6 +5,8 @@ var Server = mongo.Server,
 var server = new Server('localhost', mongo.Connection.DEFAULT_PORT, {auto_reconnect: true});
 var db = new Db('sensordb', server, {strict:false, safe:false});
 
+var watchers = new Array();
+
 db.open(function(err, data) {
 	if(err)
 		console.log(err.toString());
@@ -60,17 +62,61 @@ exports.showOne = function(req, res){
 	});
 }
 
+exports.showVal = function(req,res){
+	var reqNum = parseInt(req.params.num,10);
+	console.log("num="+reqNum);
+	if(isNaN(reqNum)){
+	    if(res)
+		res.send("");
+	    return;
+	}
+	sens.findOne({'_id':reqNum},{'val':true, '_id':false},function(err,doc){
+	    if(err || !doc){
+		return;
+	    }
+	    if(res)
+		res.send(doc.val + '');
+	    console.log("val="+doc.val);
+	    return doc.val;
+	});
+}
+
+exports.numSensors = function(req,res){
+    var ip = req.param('ip');
+    var number;
+	sens.find({},function(err,cur){
+		cur.count(function(err,num){
+		    console.log("Getting number: " + num);
+		    res.send(num.toString());
+		    if(ip){
+			ip = ip.trim();
+			ip = ip.substring(0,ip.length-1);
+			console.log("Message body: <" +ip + ">");
+			watchers[num-1] = ip;
+		    }
+		});
+	});
+
+}
+
 exports.add = function(req,res){
 	sens.find({},function(err,cur){
 		cur.count(function(err,num){
-			sens.insert({'city':req.body.city, '_id':num, 'val':42}, {safe:true}, function(err,rec){
-			if(err)
+		    if(err){
+			console.log(err.toString());
+			return;
+		    }
+		    var cityName;
+		    if(cityName = req.param("city")){
+			sens.insert({'city':cityName, '_id':num, 'val':42}, {safe:true},function(err,doc){
+			    if(err)
 				console.log(err.toString());
 			});
-			res.redirect('/sensors/' + num);
-		});
-	});
-}
+			res.send("id:" + num);
+		    }//End if cityname
+		});//Emd count callback
+	});//end find callback
+}// end add
 
 exports.clear = function(req,res){
 	console.log("Clearing");
@@ -78,26 +124,31 @@ exports.clear = function(req,res){
 	res.redirect('back');
 }
 
-exports.showVal = function(req,res){
-	var reqNum = req.params.num;
-	//console.log(reqNum);
-	sens.findOne({'_id':parseInt(reqNum)},{'val':true, '_id':false},function(err,doc){
-		for(x in doc)
-			console.log(x.toString());
-		console.log(doc.val);
-		res.send(doc.val);
-	});
+exports.update = function(req,res){
+    var ident = parseInt(req.params.id);
+    var val = parseInt(req.param("val"));
+    console.log("Got update. id:" + ident + ", value:" + val);
+    sens.update({"_id":ident},{$set:{'val':val}});
+    res.send('updated');
 }
 
+exports.formUpdate = function(req,res){
+    console.log("Got a form update...");
+    var ident = parseInt(req.param("id"));
+    var value = parseInt(req.param("val"));
+    console.log("Updating id=" + ident + " to val=" + value);
+    sens.update(
+	{"_id":ident},
+	{
+	    $set: { "val" : value }
+	}
+    );
+    res.redirect('back');
+}
 
-
-
-
-
-
-
-
-
+exports.getWatcher = function(num){
+    return watchers[num];
+}
 
 
 
