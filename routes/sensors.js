@@ -5,6 +5,8 @@ var Server = mongo.Server,
 var server = new Server('localhost', mongo.Connection.DEFAULT_PORT, {auto_reconnect: true});
 var db = new Db('sensordb', server, {strict:false, safe:false});
 
+var watchers = new Array();
+
 db.open(function(err, data) {
 	if(err)
 		console.log(err.toString());
@@ -72,21 +74,27 @@ exports.showVal = function(req,res){
 		return;
 	    }
 	    if(res)
-		res.send(doc.val);
+		res.send(doc.val + '');
 	    return doc.val;
 	});
 }
 
 exports.numSensors = function(req,res){
-    if(req.body){
-	console.log("Message body: " + req.body);
-    }
+    var ip = req.param('ip');
+    var number;
 	sens.find({},function(err,cur){
 		cur.count(function(err,num){
-			console.log(num);
-			res.send(num.toString());
+		    console.log("Getting number: " + num);
+		    res.send(num.toString());
+		    if(ip){
+			ip = ip.trim();
+			ip = ip.substring(0,ip.length-1);
+			console.log("Message body: <" +ip + ">");
+			watchers[num-1] = ip;
+		    }
 		});
 	});
+
 }
 
 exports.add = function(req,res){
@@ -136,7 +144,9 @@ exports.formUpdate = function(req,res){
     res.redirect('back');
 }
 
-
+exports.getWatcher = function(num){
+    return watchers[num];
+}
 
 
 
