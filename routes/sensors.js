@@ -123,15 +123,15 @@ exports.clear = function(req,res){
 }
 
 exports.update = function(req,res){
-    var ident = parseInt(req.params.id);
-    var val = parseInt(req.param("val"));
-    console.log("Got update. id:" + ident + ", value:" + val);
+    var ident = parseInt(req.param("id"));
+    var val = parseInt(req.params.val);
+	if(isNaN(val))
+		val = parseInt(req.param("val"));
     sens.update({"_id":ident},{$set:{'val':val}});
     res.send('updated');
 }
 
 exports.formUpdate = function(req,res){
-    console.log("Got a form update...");
     var ident = parseInt(req.param("id"));
     var value = parseInt(req.param("val"));
     console.log("Updating id=" + ident + " to val=" + value);
@@ -147,8 +147,6 @@ exports.formUpdate = function(req,res){
 exports.getWatcher = function(num){
     return watchers[num];
 }
-
-
 
 
 

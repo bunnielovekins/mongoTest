@@ -1,35 +1,31 @@
 doctype 5
-html(ng-app)
+html(ng-app="myApp")
 	head
 		script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js")
-
-
-	body
 		script.
-			var xmlHttp;
-			var num = 0;
-			function startHTTP(str, callback){
-				xmlHttp = new XMLHttpRequest();
-				xmlHttp.open("GET", str, true);
-				xmlHttp.responseType="text";
-				xmlHttp.send(null);
-				xmlHttp.onreadystatechange = callback;
+			'use strict';
+			
+			var myApp = angular.module('myApp', []);
+			myApp.config(['$httpProvider', function($httpProvider) {
+				$httpProvider.defaults.useXDomain = true;
+				delete $httpProvider.defaults.headers.common['X-Requested-With'];
 			}
-			function updateNum(){
-				startHTTP("/sensors/num",function(){
-					console.log("Calling. Current response: " + xmlHttp.response);
-					if(xmlHttp.readyState == xmlHttp.DONE){
-						console.log(xmlHttp.response);
-						num = parseInt(xmlHttp.response,10);
-					}
-				});
-			}
-			function sensorsCtrl($scope){
-				$scope.numSensors = function(){
-					updateNum();
-					return num;
+			]);
+			/*Controllers*/
+			function MyCtrl($scope, $http) {
+				$scope.num = function(){
+					var url = "/sensors/num";
+					$http.get(url).success(function(data){
+						$scope.number = data;
+					});
 				}
+				$scope.num();
 			}
+		
+
+
+	body(ng-controller="MyCtrl")
+
 		br/
 		label Name:
 		input(type='text')(ng-model="yourName")(placeholder="Enter name")
@@ -37,8 +33,6 @@ html(ng-app)
 		h2 Hello, {{yourName}}!
 		br/
 		br/
-		
-		div(ng-controller="sensorsCtrl")
-			{{numSensors()}} sensors active
+		{{number}} sensors active
 			
 		

@@ -15,6 +15,8 @@ var server = dgram.createSocket('udp4');
 var sendPort = 4002;
 var app = express();
 
+var lastSent = new Array();
+
 // all environments
 app.set('port', process.env.PORT || 4000);
 app.set('views', __dirname + '/views');
@@ -52,35 +54,51 @@ http.createServer(app).listen(app.get('port'), function(){
 });
 
 server.on("message",function(msg,rinfo){
-    console.log("Got UDP Message: " + msg);
+    //console.log("Got UDP Message: " + msg);
     var str = msg.toString();
     if(str.indexOf("get")!=-1){
-	var num = parseInt(str.substring(4),10);
-	sensors.showVal({params: {num : num}},
-			{
-			    send: function(str){
-				    var buf = new Buffer(str);
-				    var dest = sensors.getWatcher(num);
-
-				    //console.log("Dest: " + dest + ", rinfo: " + rinfo.address);
-				    //console.log("Str: " + str + ", Buf: " + buf.toString());
-				    
-				    server.send(buf,0,buf.length,sendPort,rinfo.address,function(err,bytes){
-						console.log("Sent");
-						if(err)
-							console.log(err.toString);
-						//else if(bytes){
-						//	console.log("bytes sent: " + bytes);
-						}
-				    }
-				    );
-			    }
+		var num = parseInt(str.substring(4),10);
+		sensors.showVal({params: {num : num}},
+		{
+			send: function(str){
+				var buf = new Buffer(str);
+				if(!lastSent[num] && lastSent[num] != 0)
+					lastSent[num] = -1;
+				var strint = parseInt(str);
+				if((var dif = strint - lastSent[num])>=2 || dif <=-2){
+					var dest = sensors.getWatcher(num);
+					server.send(buf,0,buf.length,sendPort,rinfo.address);
+					lastSent[num] = parseInt(str);
+					console.log("Sent update to id " + num);
+				}
 			}
-		       );
+		}
+		);
     }
     
-    else if(str.indexOf("set")===0){
-	
+    else if(str.indexOf("set")!=-1){
+		var str = msg.toString();
+		str = str.substring(4);
+		while(str.charAt(0) === ' ')
+			str = str.substring(1);
+		var id = str.substring(0,str.indexOf(' '));
+		str = str.substring(str.indexOf(' ')+1);
+		sensors.update({
+			params: {
+				id:id,
+				val:str
+			},
+			param: function(str){
+				if(str.indexOf('id') != -1)
+					return id;
+				if(str.indexOf('val') != -1)
+					return str;
+			}
+		},{
+			send: function(str){}
+		}
+		);
+		console.log("Updated number " + id + " to value " + str);
     }
 });
 
