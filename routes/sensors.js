@@ -169,7 +169,15 @@ var startmqtt = function(){
 
 var onMessage = function(topic,message){
 	if(topic.trim() === 'sens/meta'){
-		switch(message.trim()){
+	    if(message.indexOf("add")!=-1){
+		message = message.substring(4);
+		add( 
+		    {param:function(str){return message;}},
+		    {send:function(str)
+		    {mqclient.publish('sens/meta',str.substring(3));}
+		    });
+	    }
+		else switch(message.trim()){
 			case "num":
 				sens.find({},function(err,cur){
 					cur.count(function(err,num){
