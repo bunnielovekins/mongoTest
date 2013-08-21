@@ -13,19 +13,13 @@ var express = require('express')
 var engineio = false;
 var mqtt = true;
 var udpServer = true;
-
+  
 if(udpServer){
 	var dgram = require('dgram');
 	var server = dgram.createSocket('udp4');
 	var sendPort = 4002;
 	var lastSent = new Array();
 }
-
-if(mqtt){
-	var mqtt = require('mqtt')
-  , mqclient = mqtt.createClient();
-}
-
 var app = express();
 
 
@@ -124,11 +118,4 @@ if(udpServer){
 	});
 
 	server.bind(4001);
-}
-
-if(mqtt){
-	
-	
-	
-	
 }

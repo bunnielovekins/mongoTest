@@ -77,7 +77,7 @@ if(udpServer){
 					var dif = strint - lastSent[num];
 					if(dif>=2 || dif <=-2){
 						var dest = sensors.getWatcher(num);
-						server.send(buf,0,buf.length,sendPort,rinfo.address);
+						server.send(buf,0,buf.length,sendPort,dest);
 						lastSent[num] = parseInt(str);
 						console.log("Sent update to id " + num);
 					}
