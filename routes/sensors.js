@@ -173,8 +173,10 @@ var onMessage = function(topic,message){
 		message = message.substring(4);
 		add( 
 		    {param:function(str){return message;}},
-		    {send:function(str)
-		    {mqclient.publish('sens/meta',str.substring(3));}
+		    {send:function(str){
+			mqclient.publish('sens/meta',str.substring(3));
+			console.log("Publishing " + str);
+		    }
 		    });
 	    }
 		else switch(message.trim()){
