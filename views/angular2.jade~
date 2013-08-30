@@ -1,0 +1,31 @@
+doctype 5
+html(ng-app="senses")
+	head
+		link(rel="stylesheet")(href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css")
+		link(rel="stylesheet")(href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css")
+
+		script(src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js")
+		script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js")
+		script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular-resource.min.js")
+		script.
+			'use strict';
+			var senses = angular.module('senses', ['ngResource']).
+				factory('sensors',function($resource){
+					return $resource('/sensors',{},{
+						query:{method:'GET',params:{},isArray:true}
+					});
+				});
+			function sensCtrl($scope,sensors){
+				$scope.sensors = sensors.query();
+				$scope.reload = function(){
+					$scope.sensors = sensors.query();
+				}
+			}
+	body(ng-controller="sensCtrl")
+		h1 Hello!
+		br/
+		button(ng-click="reload()") Reload
+		ul
+			li(ng-repeat="sensor in sensors")
+				p Sensor name: {{sensor.city}}
+				p Value: {{sensor.val}}
