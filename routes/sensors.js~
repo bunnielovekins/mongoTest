@@ -15,7 +15,6 @@ db.open(function(err, data) {
 		console.log(err.toString());
 	else{
 		db = data;
-		ready++;
 		console.log("Opened database");
 		startmqtt();
 	}
@@ -29,7 +28,6 @@ db.collection('sensors', {strict:false}, function(err, collection){
 	else {
 		console.log("Connected to database");
 		sens = collection;
-		ready++;
 	}
 });
 
@@ -84,6 +82,22 @@ exports.showVal = function(req,res){
 		if(res)
 			res.send(doc.val + '');
 		return doc.val;
+	});
+}
+
+exports.showName = function(req,res){
+	var reqNum = parseInt(req.param(num),10);
+	if(isNaN(reqNum)){
+		if(res)
+			res.send("");
+		return;
+	}
+	sens.findOne({'_id':reqNum},{'_id':false, 'city':true},function(err,doc){
+		if(err || !doc)
+			return;
+		if(res)
+			res.send(doc.city + '');
+		return doc.city;
 	});
 }
 
@@ -171,7 +185,17 @@ var startmqtt = function(){
 
 var onMessage = function(topic,message){
 	if(topic.trim() === 'sens/meta'){
-		switch(message.trim()){
+	    if(message.indexOf("add")!=-1){
+		message = message.substring(4);
+		add( 
+		    {param:function(str){return message;}},
+		    {send:function(str){
+			mqclient.publish('sens/meta',str.substring(3));
+			console.log("Publishing " + str);
+		    }
+		    });
+	    }
+		else switch(message.trim()){
 			case "num":
 				sens.find({},function(err,cur){
 					cur.count(function(err,num){

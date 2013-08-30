@@ -48,6 +48,7 @@ app.get('/sensors/num',sensors.numSensors);
 app.get('/sensors', sensors.listAll);
 app.get('/sensors/:id', sensors.showOne);
 app.get('/:num', sensors.showVal);
+app.get('/name/:num',sensors.showName);
 
 // PUT = create, POST = create/update
 app.post('/sensors/add', sensors.add);

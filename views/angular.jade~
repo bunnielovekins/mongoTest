@@ -20,6 +20,10 @@ html(ng-app="myApp")
 					});
 				}
 				$scope.num();
+				
+				$scope.getSensor = function(senNum){
+					
+				}
 			}
 		
 
@@ -27,12 +31,8 @@ html(ng-app="myApp")
 	body(ng-controller="MyCtrl")
 
 		br/
-		label Name:
-		input(type='text')(ng-model="yourName")(placeholder="Enter name")
-		br/
-		h2 Hello, {{yourName}}!
 		br/
 		br/
-		{{num()}} sensors active
+		{{number}} sensors active
 			
 		

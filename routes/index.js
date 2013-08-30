@@ -4,10 +4,9 @@
  */
 
 exports.index = function(req, res){
-	console.log(req.params);
 	switch(req.path){
 		case "/ang":
-			res.render('angular', { title: 'Sensors' });
+			res.render('angular2', { title: 'Sensors' });
 			break;
 		case "/":
 			res.render('index', { title: 'Sensors' });

@@ -85,6 +85,22 @@ exports.showVal = function(req,res){
 	});
 }
 
+exports.showName = function(req,res){
+	var reqNum = parseInt(req.param('num'),10);
+	if(isNaN(reqNum)){
+		if(res)
+			res.send("");
+		return;
+	}
+	sens.findOne({'_id':reqNum},{'_id':false, 'city':true},function(err,doc){
+		if(err || !doc)
+			return;
+		if(res)
+			res.send(doc.city + '');
+		return doc.city;
+	});
+}
+
 exports.numSensors = numSensors = function(req,res){
 	var ip = req.param('ip');
 	sens.find({},function(err,cur){
