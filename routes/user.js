@@ -4,5 +4,5 @@
  */
 
 exports.list = function(req, res){
-  res.send("respond with a resource");
+  res.send("Placeholder, there are no users");
 };

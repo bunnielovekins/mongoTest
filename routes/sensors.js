@@ -137,6 +137,12 @@ exports.add = add = function(req,res){
 	});//end find callback
 }// end add
 
+exports.formAdd = function(req,res){
+	add(req,{send:function(str){
+		res.redirect('back');
+	}});
+}
+
 exports.clear = function(req,res){
 	console.log("Clearing");
 	sens.remove({});
@@ -150,6 +156,7 @@ exports.update = update = function(req,res){
 	if(isNaN(val))
 		val = parseInt(req.param("val"));
 	sens.update({"_id":ident},{$set:{'val':val}});
+	mqclient.publish('sens/'+ident, value+'');
 	res.send('updated');
 }
 
@@ -161,6 +168,7 @@ exports.formUpdate = function(req,res){
 		{"_id":ident},
 		{$set: { "val" : value }}
 	);
+	mqclient.publish('sens/'+ident, value+'');
 	res.redirect('back');
 }
 
@@ -187,6 +195,7 @@ var onMessage = function(topic,message){
 	if(topic.trim() === 'sens/meta'){
 	    if(message.indexOf("add")!=-1){
 		message = message.substring(4);
+		console.log("Adding");
 		add( 
 		    {param:function(str){return message;}},
 		    {send:function(str){

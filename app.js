@@ -10,8 +10,6 @@ var express = require('express')
   , http = require('http')
   , path = require('path');
 
-var engineio = false;
-var mqtt = true;
 var udpServer = true;
   
 if(udpServer){
@@ -48,9 +46,10 @@ app.get('/sensors/num',sensors.numSensors);
 app.get('/sensors', sensors.listAll);
 app.get('/sensors/:id', sensors.showOne);
 app.get('/:num', sensors.showVal);
-app.get('/name/:num',sensors.showName);
+app.get('/bs/*',routes.index);
 
-// PUT = create, POST = create/update
+// PUT = create, POST = create/update (apparently)
+app.post('/sensors/formadd', sensors.formAdd);
 app.post('/sensors/add', sensors.add);
 app.post('/sensors/clear', sensors.clear);
 app.post('/sensors/upd', sensors.formUpdate);

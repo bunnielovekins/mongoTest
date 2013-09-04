@@ -1,10 +1,10 @@
 doctype 5
 html(ng-app="senses")
 	head
-		link(rel="stylesheet")(href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css")
-		link(rel="stylesheet")(href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css")
-
-		script(src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js")
+		title Angular-based sensor page
+		meta(name="viewport")(content="width=device-width, initial-scale=1.0")
+		link(rel="stylesheet")(href="bs/css/bootstrap.css")(media="screen")
+		<!--link(rel="stylesheet")(href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css")-->
 		script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js")
 		script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular-resource.min.js")
 		script.
@@ -15,17 +15,54 @@ html(ng-app="senses")
 						query:{method:'GET',params:{},isArray:true}
 					});
 				});
+			var scope;
 			function sensCtrl($scope,sensors){
 				$scope.sensors = sensors.query();
 				$scope.reload = function(){
 					$scope.sensors = sensors.query();
 				}
+				scope = $scope;
 			}
+			var timerIsOn = false;
+			function timer(){
+				if(timerIsOn){
+					scope.reload();
+					setTimeout("timer()",500);
+				}
+			}
+			function timerOn(){
+				if(!timerIsOn){
+					$('#reloadBtn').text("Auto-Reload On");
+					timerIsOn = true;
+					timer();
+				}
+				else{
+					$('#reloadBtn').text("Auto-Reload Off");
+					timerIsOn = false;
+				}
+			}
+			
+
 	body(ng-controller="sensCtrl")
-		h1 Hello!
+		script(src="http://code.jquery.com/jquery.js")
+		script(src="bs/js/bootstrap.min.js")
+		h1 Welcome to the sensor database frontend thing using angular and bootstrap
 		br/
-		button(ng-click="reload()") Reload
-		ul
-			li(ng-repeat="sensor in sensors")
+		div(class="row")
+			div(class="span6")
+				button(onclick="timerOn()")(class="btn btn-large btn-block btn-primary")(id="reloadBtn") Auto-Reload Off
+			div(class="span6")
+				form(method="post")(action="/sensors/clear/")
+					button(class="btn btn-large btn-block btn-info") Clear
+		br/
+		form(class="form-search")(id="addForm")(method="post")(action="/sensors/formadd/")(enctype="multipart/form-data")
+			div(class="input-append")
+				input(class="search-query")(placeholder="City Name")(name="city")(id="TextBox")(type="text")(maxlength="16")(required)
+				button(class="btn")(type="Submit") Add
+
+		br/
+		h3 All database entries:
+		div(class="row")
+			div(class="span3")(ng-repeat="sensor in sensors")
 				p Sensor name: {{sensor.city}}
 				p Value: {{sensor.val}}
