@@ -118,24 +118,24 @@ exports.numSensors = numSensors = function(req,res){
 }
 
 exports.add = add = function(req,res){
-	sens.find({},function(err,cur){
-		cur.count(function(err,num){
-			if(err){
-				console.log(err.toString());
-				return;
-			}
-			var cityName;
-			if(cityName = req.param("city")){
-				sens.insert({'city':cityName, '_id':num, 'val':42}, {safe:true},function(err,doc){
-					if(err)
-						console.log(err.toString());
-				});
-				mqclient.subscribe('sens/'+num);
-				res.send("id:" + num);
-			}//End if cityname
-		});//end count callback
-	});//end find callback
-}// end add
+	var cityName;
+	if(!(cityName = req.param("city")))
+		return;
+	insert({'city':cityName, '_id':0, 'val':42},function(num){
+		mqclient.subscribe('sens/'+num);
+		res.send("id:" + num);	
+	})
+}
+
+var insert = function(things, callback){
+	sens.insert(things, {safe:true}, function(err,doc){
+		if(err){
+			things._id++;
+			insert(things,callback);
+		}
+		else callback(things._id);
+	});
+}
 
 exports.formAdd = function(req,res){
 	add(req,{send:function(str){
@@ -174,6 +174,14 @@ exports.formUpdate = function(req,res){
 
 exports.getWatcher = function(num){
 	return watchers[num];
+}
+
+exports.del = function(req,res){
+	var ident = parseInt(req.param("id"));
+	mqclient.publish("sens/"+ident,"510");
+	console.log("Deleting id="+ident);
+	sens.remove({"_id":ident},true);
+	res.redirect('back');
 }
 
 //var topics = new Array();

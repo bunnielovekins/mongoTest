@@ -2,9 +2,8 @@ doctype 5
 html(ng-app="senses")
 	head
 		title Angular-based sensor page
-		meta(name="viewport")(content="width=device-width, initial-scale=1.0")
+		meta(name="viewport")(content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no")
 		link(rel="stylesheet")(href="bs/css/bootstrap.css")(media="screen")
-		<!--link(rel="stylesheet")(href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css")-->
 		script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js")
 		script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular-resource.min.js")
 		script.
@@ -41,28 +40,58 @@ html(ng-app="senses")
 					timerIsOn = false;
 				}
 			}
+			function reloadValues(){
+				if(scope)
+					scope.reload();
+			}
 			
 
 	body(ng-controller="sensCtrl")
 		script(src="http://code.jquery.com/jquery.js")
 		script(src="bs/js/bootstrap.min.js")
-		h1 Welcome to the sensor database frontend thing using angular and bootstrap featuring horribly inefficient auto-reloading
-		br/
-		div(class="row")
-			div(class="span6")
-				button(onclick="timerOn()")(class="btn btn-large btn-block btn-primary")(id="reloadBtn") Auto-Reload Off
-			div(class="span6")
-				form(method="post")(action="/sensors/clear/")
-					button(class="btn btn-large btn-block btn-info") Clear
-		br/
-		form(class="form-search")(id="addForm")(method="post")(action="/sensors/formadd/")(enctype="multipart/form-data")
-			div(class="input-append")
-				input(class="search-query")(placeholder="City Name")(name="city")(id="TextBox")(type="text")(maxlength="16")(required)
-				button(class="btn")(type="Submit") Add
-
-		br/
-		h3 All database entries:
-		div(class="row")
-			div(class="span3")(ng-repeat="sensor in sensors")
-				p Sensor name: {{sensor.city}}
-				p Value: {{sensor.val}}
+		div(class="container")
+			h1 Welcome, stranger
+			br/
+			div(class="row")
+				div(class="col-md-4 col-sm-4 col-xs-12")
+					button(onclick="timerOn()")(class="btn btn-large btn-block btn-primary")(id="reloadBtn") Auto-Reload Off
+				div(class="col-md-4 col-sm-4 col-xs-12")
+					form(method="post")(action="/sensors/clear/")
+						button(class="btn btn-large btn-block btn-danger") Clear
+				div(class="col-md-4 col-sm-4 col-xs-12")
+					button(onclick="reloadValues()")(class="btn btn-large btn-block btn-info") Manual Reload
+			br/
+			div(class="row")
+				div(class="col-md-5 col-sm-5 col-xs-12")
+					form(class="form-inline")(id="addForm")(method="post")(action="/sensors/formadd/")(enctype="multipart/form-data")
+						div(class="row")
+							div(class="form-group col-xs-8 col-md-8 col-sm-8")
+									input(class="form-control")(placeholder="City Name")(name="city")(id="TextBox")(type="text")(maxlength="16")(required)
+							div(class="form-group col-xs-4 col-md-4 col-sm-4")
+									button(class="btn btn-success btn-block")(type="Submit") Add
+						
+				div(class="col-md-5 col-md-offset-2 col-sm-6 col-sm-offset-1 col-xs-12")
+					div(class="row")
+						form(class="form-inline")(id="updateForm")(method="post")(action="/sensors/upd")
+							div(class="form-group col-md-4 col-xs-4 col-sm-4")
+								input(type="number")(class="form-control")(placeholder="Id")(required)(name="id")
+							div(class="form-group col-md-4 col-sm-4 col-xs-4")
+								input(type="number")(class="form-control")(placeholder="Value")(name="val")(required)
+							div(class="form-group col-md-4 col-sm-4 col-xs-4")
+								button(type="submit")(class="btn btn-warning btn-block") Update
+			br/
+			div(class="row")
+				form(class="form-inline")(id="deleteForm")(method="post")(action="/sensors/del")
+					div(class="form-group col-md-8 col-sm-8 col-xs-8")
+						input(type="number")(class="form-control")(placeholder="Id")(required)(name="id")
+					div(class="form-group col-md-4 col-sm-4 col-xs-4")
+						button(type="submit")(class="btn btn-danger btn-block") Delete
+				
+			br/
+			h3 All database entries:
+			div(class="row")
+				div(class="col-md-3 col-sm-4 col-xs-6")(ng-repeat="sensor in sensors")
+					p Sensor name: {{sensor.city}}
+					p Value: {{sensor.val}}
+					p Id: {{sensor._id}}
+					br/

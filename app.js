@@ -45,15 +45,18 @@ app.get('/ang', routes.index);
 app.get('/sensors/num',sensors.numSensors);
 app.get('/sensors', sensors.listAll);
 app.get('/sensors/:id', sensors.showOne);
-app.get('/:num', sensors.showVal);
 app.get('/bs/*',routes.index);
+app.get('/:num', sensors.showVal);
+
 
 // PUT = create, POST = create/update (apparently)
 app.post('/sensors/formadd', sensors.formAdd);
 app.post('/sensors/add', sensors.add);
 app.post('/sensors/clear', sensors.clear);
 app.post('/sensors/upd', sensors.formUpdate);
+app.post('/sensors/del', sensors.del);
 app.post('/sensors/:id', sensors.update);
+
 
 
 http.createServer(app).listen(app.get('port'), function(){
