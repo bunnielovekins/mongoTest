@@ -6,6 +6,7 @@ A crappy implementation of a mongo/express/node server
 Interfaces
 
 HTTP (Port 4000)
+----------------
 
 GET
 
@@ -42,7 +43,11 @@ Uses html form data to update the value of a sensor; should have id and val as p
 '/sensors/{id}'
 Similar to above, but with only one parameter, val, with the other one being in the URL
 
+'/sensors/del' 
+One parameter, id, deletes that entry
+
 UDP
+---
 
 Port 4001 to send to server
 Port 4002 to receive from server
@@ -54,6 +59,7 @@ Returns via UDP the value of sensor number id. No formatting, just number
 Sets sensor number id to value
 
 MQTT
+----
 
 Publish or subscribe to:
 

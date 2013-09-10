@@ -125,8 +125,7 @@ exports.add = add = function(req,res){
 		mqclient.subscribe('sens/'+num);
 		res.send("id:" + num);	
 	})
-
-}// end add
+}
 
 var insert = function(things, callback){
 	sens.insert(things, {safe:true}, function(err,doc){
