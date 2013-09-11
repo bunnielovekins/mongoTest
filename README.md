@@ -3,6 +3,9 @@ mongoTest
 
 A crappy implementation of a mongo/express/node server
 
+To run, npm install mongodb, mqtt, nodemon
+Then run mongod, mosquitto, node app.js
+
 Interfaces
 
 HTTP (Port 4000)
@@ -24,7 +27,7 @@ Shows one sensor in JSON format
 
 '/sensors/num'
 Returns number of sensors as plain text only
-{Also if message body contains an ip will register that ip as watching the sensor returned}
+{Also if message body contains an ip will register that ip as watching the sensor returned for UDP purposes}
 
 '/{id}' {id is the number of an existing sensor}
 Returns value of sensor as plain text only
